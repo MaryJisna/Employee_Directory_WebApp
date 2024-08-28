@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Employee_Directory_WebApp.Models.Employee>
+
+<h1>Employee List</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Details</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+
+        {
+            <tr>
+                <td>@employee.Name</td>
+                <td>@employee.Department</td>
+                <td>@employee.Position</td>
+                <td><a href="@Url.Action("Details", "Employee", new { id = employee.Id })">View</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

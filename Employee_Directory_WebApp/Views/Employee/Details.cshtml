@@ -1,0 +1,88 @@
+﻿@model Employee_Directory_WebApp.Models.Employee
+
+
+<h1>Employee Details</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Name</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+
+    <dt class="col-sm-3">Department</dt>
+    <dd class="col-sm-9">@Model.Department</dd>
+
+    <dt class="col-sm-3">Position</dt>
+    <dd class="col-sm-9">@Model.Position</dd>
+
+    <dt class="col-sm-3">Address</dt>
+    <dd class="col-sm-9">@Model.Address</dd>
+
+    <dt class="col-sm-3">Date of Joining</dt>
+    <dd class="col-sm-9">@Model.DateOfJoining.ToShortDateString()</dd>
+
+    <dt class="col-sm-3">CTC</dt>
+    <dd class="col-sm-9">@Model.CTC.ToString("C")</dd>
+
+    <dt class="col-sm-3">Salary</dt>
+    <dd class="col-sm-9">@Model.Salary.ToString("C")</dd>
+
+    <dt class="col-sm-3">Team Name</dt>
+    <dd class="col-sm-9">@Model.TeamName</dd>
+
+    <dt class="col-sm-3">Manager Name</dt>
+    <dd class="col-sm-9">@Model.ManagerName</dd>
+
+    <dt class="col-sm-3">Total Experience</dt>
+    <dd class="col-sm-9">@Model.TotalExperience</dd>
+@*         .Days / 365 + " Years, " + (Model.TotalExperience.Days % 365) / 30 + " Months"</dd>
+ *@
+    <dt class="col-sm-3">In-House Experience</dt>
+    <dd class="col-sm-9">@Model.InHouseExperience</dd>
+@*         .Days / 365 + " Years, " + (Model.InHouseExperience.Days % 365) / 30 + " Months"</dd>
+ *@
+</dl>
+
+<h2>Leave Details</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Leave Date</th>
+            <th>Leave Type</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var leave in Model.Leaves)
+        {
+            <tr>
+                <td>@leave.LeaveDate.ToShortDateString()</td>
+                <td>@leave.LeaveType</td>
+                <td>@leave.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2>Attendance Details</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Present</th>
+            <th>Remark</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var attendance in Model.Attendances)
+        {
+            <tr>
+                <td>@attendance.Date.ToShortDateString()</td>
+                <td>@(attendance.IsPresent ? "Yes" : "No")</td>
+                <td>@attendance.Remark</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Index", "Employee")" class="btn btn-primary">Back to List</a>
