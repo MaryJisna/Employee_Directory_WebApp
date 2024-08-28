@@ -1,26 +1,52 @@
-﻿@model IEnumerable<Employee_Directory_WebApp.Models.Employee>
+﻿@*  @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
+
+ <h1>Employee List</h1>
+
+ <table class="table">
+     <thead>
+         <tr>
+             <th>Name</th>
+             <th>Department</th>
+             <th>Position</th>
+             <th>Details</th>
+         </tr>
+     </thead>
+     <tbody>
+         @foreach (var employee in Model)
+
+         {
+             <tr>
+                 <td>@employee.Name</td>
+                 <td>@employee.Department</td>
+                 <td>@employee.Position</td>
+                 <td><a href="@Url.Action("Details", "Employee", new { id = employee.Id })">View</a></td>
+             </tr>
+         }
+     </tbody>
+   </table> *@
+
+
+   @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
 <h1>Employee List</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Department</th>
-            <th>Position</th>
-            <th>Details</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var employee in Model)
+<div class="card-container">
+    @foreach (var employee in Model)
 
-        {
-            <tr>
-                <td>@employee.Name</td>
-                <td>@employee.Department</td>
-                <td>@employee.Position</td>
-                <td><a href="@Url.Action("Details", "Employee", new { id = employee.Id })">View</a></td>
-            </tr>
-        }
-    </tbody>
-</table>
+    {
+        <div class="card">
+            <div class="card-header">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
+                <div class="card-title">
+                    <h2>@employee.Name</h2>
+                    <p>@employee.Department</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <p><strong>Position:</strong> @employee.Position</p>
+                <a href="@Url.Action("Details", "Employee", new { id = employee.Id })" class="btn">View Details</a>
+            </div>
+        </div>
+    }
+</div>
+
