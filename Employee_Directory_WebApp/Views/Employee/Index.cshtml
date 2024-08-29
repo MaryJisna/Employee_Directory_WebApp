@@ -1,35 +1,16 @@
-﻿@*  @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
+﻿
 
- <h1>Employee List</h1>
+@model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
- <table class="table">
-     <thead>
-         <tr>
-             <th>Name</th>
-             <th>Department</th>
-             <th>Position</th>
-             <th>Details</th>
-         </tr>
-     </thead>
-     <tbody>
-         @foreach (var employee in Model)
-
-         {
-             <tr>
-                 <td>@employee.Name</td>
-                 <td>@employee.Department</td>
-                 <td>@employee.Position</td>
-                 <td><a href="@Url.Action("Details", "Employee", new { id = employee.Id })">View</a></td>
-             </tr>
-         }
-     </tbody>
-   </table> *@
-
-
-   @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
 <h1>Employee List</h1>
 
+<!-- Add Employee Button -->
+<div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
+    <button id="addEmployeeBtn" class="btn">Add Employee</button>
+</div>
+
+<!-- Employee Cards -->
 <div class="card-container">
     @foreach (var employee in Model)
 
@@ -42,11 +23,246 @@
                     <p>@employee.Department</p>
                 </div>
             </div>
-            <div class="card-body">
+      @*       <div class="card-body">
                 <p><strong>Position:</strong> @employee.Position</p>
                 <a href="@Url.Action("Details", "Employee", new { id = employee.Id })" class="btn">View Details</a>
+            </div> *@
+            <div class="card-body">
+                <p><strong>Position:</strong> @employee.Position</p>
+                <button class="btn view-details" data-employee-id="@employee.Id">View Details</button>
             </div>
         </div>
     }
 </div>
+
+<!-- Modal for Adding Employee -->
+<div id="addEmployeeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" style="display: flex; justify-content: flex-end; align-items: center;">
+            <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
+        </div>
+        <h2>Add Employee</h2>
+        <form action="@Url.Action("AddEmployee", "Employee")" method="post" class="employee-form">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="Name" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <input type="text" id="department" name="Department" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="Position" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="Address" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="dateOfJoining">Date of Joining:</label>
+                <input type="date" id="dateOfJoining" name="DateOfJoining" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="ctc">CTC:</label>
+                <input type="number" id="ctc" name="CTC" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" name="Salary" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="teamName">Team Name:</label>
+                <input type="text" id="teamName" name="TeamName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="managerName">Manager Name:</label>
+                <input type="text" id="managerName" name="ManagerName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="totalExperience">Total Experience (in months):</label>
+                <input type="number" id="totalExperience" name="TotalExperience" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="inHouseExperience">In-House Experience (in months):</label>
+                <input type="number" id="inHouseExperience" name="InHouseExperience" class="form-control" />
+            </div>
+            <button type="submit" class="btn" style="grid-column: span 2;">Add Employee</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Employee Details -->
+<div id="employeeDetailsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" style="display: flex; justify-content: flex-end; align-items: center;">
+            <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
+        </div>
+        <div id="employeeDetailsContent"></div>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- Add styles and JavaScript for modal -->
+<!-- CSS for Modal and Two-Column Layout -->
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        position: relative;
+    }
+
+    .close {
+        color: #aaa;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .employee-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+        .employee-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .employee-form button[type="submit"] {
+            justify-self: center;
+            align-self: center;
+            padding: 10px 20px;
+        }
+</style>
+<script>
+    var modal = document.getElementById("addEmployeeModal");
+    var btn = document.getElementById("addEmployeeBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<!-- JavaScript for modals -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Add Employee Modal
+        var addEmployeeModal = $("#addEmployeeModal");
+        var addEmployeeBtn = $("#addEmployeeBtn");
+        var addEmployeeSpan = $("#addEmployeeModal .close");
+
+        addEmployeeBtn.click(function () {
+            addEmployeeModal.css("display", "block");
+        });
+
+        addEmployeeSpan.click(function () {
+            addEmployeeModal.css("display", "none");
+        });
+
+        // Employee Details Modal
+        var detailsModal = $("#employeeDetailsModal");
+        var detailsSpan = $("#employeeDetailsModal .close");
+
+        $(".view-details").click(function () {
+            var employeeId = $(this).data("employee-id");
+            $.ajax({
+                url: '@Url.Action("Details", "Employee")/' + employeeId,
+                type: 'GET',
+                success: function (result) {
+                    $("#employeeDetailsContent").html(result);
+                    detailsModal.css("display", "block");
+                },
+                error: function (error) {
+                    console.log("Error fetching employee details:", error);
+                }
+            });
+        });
+
+        detailsSpan.click(function () {
+            detailsModal.css("display", "none");
+        });
+
+        // Close modal when clicking outside
+        $(window).click(function (event) {
+            if (event.target == addEmployeeModal[0]) {
+                addEmployeeModal.css("display", "none");
+            }
+            if (event.target == detailsModal[0]) {
+                detailsModal.css("display", "none");
+            }
+        });
+
+
+        // Handle form submission
+        $(".employee-form").submit(function (e) {
+            e.preventDefault();
+            var formData = $(this).serializeArray();
+            var jsonData = {};
+
+            $.each(formData, function () {
+                jsonData[this.name] = this.value || '';
+            });
+
+            $.ajax({
+                url: '@Url.Action("AddEmployee", "Employee")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(jsonData),
+                success: function (result) {
+                    if (result.success) {
+                        alert(result.message);
+                        $("#addEmployeeModal").css("display", "none");
+                        location.reload(); // Reload the page to show the new employee
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error submitting form:", error);
+                    alert("An error occurred while submitting the form. Please try again.");
+                }
+            });
+        })
+    });
+</script>
+
 

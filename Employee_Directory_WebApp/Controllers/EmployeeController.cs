@@ -22,6 +22,7 @@ namespace Employee_Directory_WebApp.Controllers
             return View(employees);
         }
 
+      
         public async Task<IActionResult> Details(int id)
         {
             var employee = await _context.Employees
@@ -36,5 +37,19 @@ namespace Employee_Directory_WebApp.Controllers
 
             return View(employee);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Employees.Add(employee);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Employee added successfully" });
+            }
+            return Json(new { success = false, message = "Failed to add employee" });
+        }
+
+
     }
 }
