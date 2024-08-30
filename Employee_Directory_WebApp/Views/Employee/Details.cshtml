@@ -113,31 +113,177 @@
 
 @model Employee_Directory_WebApp.Models.Employee
 
-<div id="parent_div" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 80%; marsgin: 0 auto;">
+@{
+    var notes = new List<(string Heading, string Content)>
+    {
+        ("Meeting Notes", "Discussed the upcoming project deadlines and resource allocation."),
+        ("Client Feedback", "The client appreciated the recent updates and suggested some improvements."),
+        ("Team Update", "Team members are making good progress on their respective tasks.")
+    };
 
+    var random = new Random();
+    var colors = new List<string> { "#FFEBEE", "#E3F2FD", "#E8F5E9", "#FFFDE7", "#F3E5F5" };
+}
+
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        /* height: 100%; */
+        background-color: #F8F8F8;
+        padding: 10px;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+        border-radius: 4px;
+    }
+
+    .chart-container {
+        display: flex;
+        flex-direction: column;
+         /* height: 100px; */
+        justify-content: space-between;
+        margin: 5px 0;
+    }
+
+    .bar {
+        height: 20px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding-left: 5px;
+        color: white;
+        font-size: 12px;
+        box-sizing: border-box;
+        position: relative;
+        margin: 5px 0;
+    }
+
+    .bar-label {
+/*         position: absolute;
+        left: 5px;
+        color: #000; */
+        display:"flex";
+        font-size: 12px;
+        align-items:center;
+        justify-content:center;
+        margin-top:5px;
+
+    }
+
+    .bar-label1 {
+        /*         position: absolute;
+            left: 5px;
+            color: #000; */
+        display: "flex";
+        font-size: 7px;
+        align-items: center;
+        justify-content: center;
+     
+    }
+
+    .leave-sub-card{
+        flex: 1;
+        margin: 0 2px;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+        border-radius: 4px;
+        height: 130px;
+        background-color: #F8F8F8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+    }
+
+    .salary-innercard {
+        flex: 1;
+        width: 100%;
+        overflow-y: auto;
+        border: 1px solid #000;
+        border-radius: 4px;
+        background-color: white;
+        height: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Horizontally center the items */
+        justify-content: center; /* Vertically center the items */
+        padding: 0;
+        margin: 0;
+    }
+
+        .salary-innercard p {
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+            text-align: center;
+        }
+
+    .profile-head p {
+        margin: 0;
+        padding: 0;
+        font-size: 10px;
+        text-align: center;
+    }
+
+    .employee-details h2,
+    .employee-details p,
+    .employee-details span {
+        margin: 0;
+        padding: 0px;
+        margin-left:150px;
+    }
+
+    .employee-details span {
+        color: gold;
+        margin: 0;
+    }
+
+    .profile-address p,
+    .profile-address span {
+        margin: 0;
+        padding: 5px;
+      
+    }
+
+    .profile-address span {
+        margin: 0;
+    }
+
+    .team-name {
+        background-color: #d4edda; /* Light green background */
+        color: #155724; /* Dark green text color */
+        padding: 2px 5px; /* Optional padding for better appearance */
+        border-radius: 4px; /* Optional rounded corners */
+    }
+
+    .manager-name {
+        background-color: #f8d7da; /* Very light red background */
+        color: #721c24; /* Medium red text color */
+        padding: 2px 5px; /* Optional padding for better appearance */
+        border-radius: 4px; /* Optional rounded corners */
+    }
+ 
+</style>
+
+<div id="parent_div" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 100%; margin: 0 auto;">
     <!-- First Section: Employee Details with Light Blue Background -->
-    <div style="background-color: lightblue; padding: 20px; display: flex; position: relative;">
+    <div class=profile-head; style="background-color: lightblue; padding: 20px; display: flex; position: relative;">
         <!-- Profile Image -->
-        @* <div style="position: absolute; top: 0; left: 0; transform: translate(-20%, -20%);"> *@
-            <div style="position: absolute; top: -105; left: 10; ">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="Avatar" style="border-radius: 50%; width: 100px; height: 100px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+        <div style="position: absolute; top: 60px; left: 10px;">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="Avatar" style="border-radius: 50%; width: 130px; height: 130px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
         </div>
 
         <!-- Employee Details -->
-        <div style="margin-left: 180px;">
+        <div class="employee-details">
             <h2>@Model.Name</h2>
             <p><strong>Position:</strong> @Model.Position</p>
             <p>
                 <strong>Rating:</strong>
-                <span style="color: gold;">
-                    ★★★★☆  <!-- Adjust this part dynamically if needed -->
-                </span>
+                <span>★★★★☆</span> <!-- Adjust this part dynamically if needed -->
             </p>
         </div>
     </div>
 
     <!-- Second Section: Address and Experience -->
-    <div style="margin-left:60px">
+    <div class="profile-address" style="margin-left:160px">
         <div>
             <p><strong>Address:</strong> @Model.Address</p>
         </div>
@@ -147,64 +293,185 @@
         </div>
     </div>
 
-    <div style="margin-left:20px; display:flex;">
-        <p><strong>Team:</strong> @Model.TeamName</p>
-        <p style="margin-left:20px"><strong>Reporting Manager: @Model.ManagerName</p>
+    <div style="margin-left:20px; display:flex; gap:30px;">
+        <p><strong>Team:</strong> <span class="team-name">@Model.TeamName</span></p>
+        <p><strong>Reporting Manager:</strong> <span class="manager-name">@Model.ManagerName</span></p>
+      
     </div>
 
-    <div style="display:flex;">
-        <div style="display: flex; background-color: lightblue; border: 2px solid; margin: 6px; padding: 10px;">
-            <!-- Each child div will equally divide the space -->
-            <div style="flex: 1; text-align: center; margin: 0 5px;">
-                <p>Days Present</p>
-                <div style="height: 50px; background-color: white; box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0;">29</p>
+    <div style="display: flex; gap:5px">
+        <div id="card-1" style="flex: 1; border: 1px solid #000; display: flex; height:180px; padding:10px;
+                        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+            <div style="flex: 1;">
+                <p style="margin: 0; padding: 0;">Days Present</p>
+                <div class="leave-sub-card" >
+                    <p style="margin: 0; padding: 0; font-size:35px; color:dodgerblue">29</p>
                 </div>
             </div>
+            <div style="flex: 1;">
+                <p style="margin: 0; padding: 0;">Casual Leaves </p>
+                <div class="container" style="height:130px">
+                    <div class="chart-container" >
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (4 - 1) / (10 - 1)); background-color: #4CAF50;">
+                      
+                            </div>
+                            <span class="bar-label">4</span>
+                            </div>
 
-            <div style="flex: 1; text-align: center; margin: 0 5px;">
-                <p>Casual Leave</p>
-                <div style="height: 50px; background-color: white; box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0;">29</p>
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (8 - 1) / (10 - 1)); background-color: darkslateblue;">
+
+                            </div>
+                            <span class="bar-label">8</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:#4CAF50"></div>
+                            <span class="bar-label1">Available</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:darkslateblue"></div>
+                            <span class="bar-label1">Taken</span>
+                        </div>
+
+              
+                    </div>
                 </div>
             </div>
+            <div style="flex: 1;">
+                <p style="margin: 0; padding: 0;">Casual Leaves </p>
+                <div class="container" style="height:130px">
+                    <div class="chart-container">
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (4 - 1) / (10 - 1)); background-color: #4CAF50;">
+                            </div>
+                            <span class="bar-label">4</span>
+                        </div>
 
-            <div style="flex: 1; text-align: center; margin: 0 5px;">
-                <p>Sick Leave</p>
-                <div style="height: 50px; background-color: white; box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0;">29</p>
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (8 - 1) / (10 - 1)); background-color: darkslateblue;">
+                            </div>
+                            <span class="bar-label">8</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:#4CAF50"></div>
+                            <span class="bar-label1">Available</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:darkslateblue"></div>
+                            <span class="bar-label1">Taken</span>
+                        </div>
+
+
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="display: flex; background-color: lightblue; border: 2px solid; margin: 6px; padding: 10px;">
-            <!-- Each child div will equally divide the space -->
-            <div style="flex: 1; text-align: center; margin: 0 5px;">
-                <p>Days Present</p>
-                <div style="height: 50px; background-color: white; box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0;">29</p>
-                </div>
-            </div>
 
-            <div style="flex: 1; text-align: center; margin: 0 5px;">
-                <p>Casual Leave</p>
-                <div style="height: 50px; background-color: white; box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0;">29</p>
-                </div>
+        <div id="leave-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 180px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+            <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                <p style="margin: 0; padding: 0;">Leave Applications</p>
             </div>
-
-            <div style="flex: 1; text-align: center; margin: 0 5px;">
-                <p>Sick Leave</p>
-                <div style="height: 50px; background-color: white; box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.1); border: 2px solid #ccc; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0;">29</p>
+            <div style="flex: 1; overflow-y: hidden; border:1px solid #000; border-radius:4px; background-color:white">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead style="position: sticky; top: 0; background-color: #EEEEED;">
+                        <tr>
+                            <th style="width: 33%;">Leave Date</th>
+                            <th style="width: 33%;">Leave Type</th>
+                            <th style="width: 34%;">Status</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div style="overflow-y: auto; height: 60px;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+                        <tbody>
+                            @foreach (var leave in Model.Leaves)
+                            {
+                                <tr>
+                                    <td style="width: 33%;">@leave.LeaveDate.ToShortDateString()</td>
+                                    <td style="width: 33%;">@leave.LeaveType</td>
+                                    <td style="width: 34%;">@leave.Status</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+       
 
     </div>
 
-    <!-- Third Section: All Other Details -->
-    <div style="padding: 20px;">
+    <div style="flex: 1; display: flex; gap:5px; margin-top:10px;">
+
+
+        <div id="leave-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 220px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+            <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                <p style="margin: 0; padding: 0;">Notes</p>
+            </div>
+            <div style="flex: 1; overflow-y: auto; border:1px solid #000; border-radius:4px; background-color:white; padding: 10px;">
+                @foreach (var note in notes)
+                {
+                    var bgColor = colors[random.Next(colors.Count)];
+                    <div style="background-color:@bgColor; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                        <p style="margin: 0;">@note.Heading</p>
+                        <p style="margin: 5px 0 0; font-size:10px;">@note.Content</p>
+                    </div>
+                }
+            </div>
+        </div>
+        <div  style="flex: 1; padding:0px 10px 0px 10px; ">
+
+            <div id="probation-card" style="flex: 1; border: 1px solid #ccc; display: flex; flex-direction: column; height: 90px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #f9f9f9;">
+                <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                    <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Probation</p>
+                </div>
+                <div id="probation-progress" style="flex: 1; overflow-y: auto; border:1px solid #ddd; border-radius:4px; background-color:#fff; padding: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 100%; background-color: #e0e0e0; border-radius: 8px; position: relative; height: 20px;">
+                        <div style="width: 70%; background-color: #4CAF50; height: 100%; border-radius: 8px;">
+                            <span style="position: absolute; width: 100%; text-align: center; color: #fff; top: 0; left: 0; font-weight: bold;">70%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        <div id="probation-card" style=" margin-top:10px; flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 120px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">  
+            <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                <p style="margin: 0; padding: 0;">Salary</p>
+            </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="salary-innercard">
+                        <p style="font-size:13px">Accounting accessible</p>
+                        <p style="font-size:16px; color:cornflowerblue"> 50000</p>
+                    </div>
+                    <div class="salary-innercard">
+                        <p style="font-size:13px">Accounting payable</p>
+                        <p style="font-size:16px; color:cornflowerblue"> 55000</p>
+                    </div>
+                </div>
+        </div>
+     
+
+
+
+
+    </div>
+</div>
+
+ 
+    <!-- Back to List Button -->
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="@Url.Action("Index", "Employee")" class="btn btn-primary">Back to List</a>
+    </div>
+
+</div>
+
+
+
+   <!-- Third Section: All Other Details -->
+@*     <div style="padding: 20px;">
         <dl class="row">
             <dt class="col-sm-3">Department</dt>
             <dd class="col-sm-9">@Model.Department</dd>
@@ -225,26 +492,6 @@
             <dd class="col-sm-9">@Model.ManagerName</dd>
         </dl>
 
-        <h2>Leave Details</h2>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Leave Date</th>
-                    <th>Leave Type</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var leave in Model.Leaves)
-                {
-                    <tr>
-                        <td>@leave.LeaveDate.ToShortDateString()</td>
-                        <td>@leave.LeaveType</td>
-                        <td>@leave.Status</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
 
         <h2>Attendance Details</h2>
         <table class="table">
@@ -266,11 +513,4 @@
                 }
             </tbody>
         </table>
-    </div>
-
-    <!-- Back to List Button -->
-    <div style="text-align: center; margin-top: 20px;">
-        <a href="@Url.Action("Index", "Employee")" class="btn btn-primary">Back to List</a>
-    </div>
-
-</div>
+    </div> *@

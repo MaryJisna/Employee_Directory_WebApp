@@ -41,12 +41,14 @@ namespace Employee_Directory_WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
         {
+            ModelState.Remove(nameof(employee.Leaves));
+            ModelState.Remove(nameof(employee.Attendances));
             if (ModelState.IsValid)
             {
                 _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true, message = "Employee added successfully" });
-            }
+        }
             return Json(new { success = false, message = "Failed to add employee" });
         }
 

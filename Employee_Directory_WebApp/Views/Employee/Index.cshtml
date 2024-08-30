@@ -2,37 +2,77 @@
 
 @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
+<div style="max-height:100vh;  overflow-y: auto;">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee_Directory_WebApp</a> *@
 
-<h1>Employee List</h1>
+                <div class="d-flex align-items-center flex-grow-1">
+                    <!-- Search Field -->
+                    <div class="input-group me-3">
+                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                    </div>
 
-<!-- Add Employee Button -->
-<div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
-    <button id="addEmployeeBtn" class="btn">Add Employee</button>
-</div>
+                    <!-- Filter Fields -->
+                    <select class="form-select me-2" aria-label="Location">
+                        <option selected>Location</option>
+                        <option value="1">Location 1</option>
+                        <option value="2">Location 2</option>
+                        <!-- Add more options as needed -->
+                    </select>
 
-<!-- Employee Cards -->
-<div class="card-container">
-    @foreach (var employee in Model)
+                    <select class="form-select me-2" aria-label="Department">
+                        <option selected>Department</option>
+                        <option value="1">Department 1</option>
+                        <option value="2">Department 2</option>
+                        <!-- Add more options as needed -->
+                    </select>
 
-    {
-        <div class="card">
-            <div class="card-header">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
-                <div class="card-title">
-                    <h2>@employee.Name</h2>
-                    <p>@employee.Department</p>
+                    <!-- Clear Button -->
+                    <button class="btn btn-secondary me-2" type="button">Clear</button>
                 </div>
             </div>
-      @*       <div class="card-body">
-                <p><strong>Position:</strong> @employee.Position</p>
-                <a href="@Url.Action("Details", "Employee", new { id = employee.Id })" class="btn">View Details</a>
+        </nav>
+    </header>
+
+
+
+    <h1>Employee List</h1>
+
+    <!-- Add Employee Button -->
+    <div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
+        <button id="addEmployeeBtn" class="btn">Add Employee</button>
+    </div>
+
+    <!-- Employee Cards -->
+    <div class="card-container" style="max-height: 70vh; overflow-y: auto;">
+        @foreach (var employee in Model)
+
+
+        {
+            <div class="card">
+                <div class="card-header">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
+                    <div class="card-title">
+                        <h2>@employee.Name</h2>
+                        <p>@employee.Department</p>
+                    </div>
+                </div>
+                @*       <div class="card-body">
+            <p><strong>Position:</strong> @employee.Position</p>
+            <a href="@Url.Action("Details", "Employee", new { id = employee.Id })" class="btn">View Details</a>
             </div> *@
-            <div class="card-body">
-                <p><strong>Position:</strong> @employee.Position</p>
-                <button class="btn view-details" data-employee-id="@employee.Id">View Details</button>
+                <div class="card-body">
+                    <p><strong>Position:</strong> @employee.Position</p>
+                    <button class="btn view-details" data-employee-id="@employee.Id">View Details</button>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
 
 <!-- Modal for Adding Employee -->
