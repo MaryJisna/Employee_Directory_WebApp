@@ -8,7 +8,7 @@
     }
 
         .view-details:hover {
-            background-color: skyblue;
+            background-color: #2d85eb;
             color: white;
             cursor: pointer;
         }
@@ -91,20 +91,6 @@
     @foreach (var employee in Model)
     
     {
-
-@*             <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
-                <div style="display:flex; padding:10px " >
-                    <div style="display:flex; align-items:center">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
-                    </div>
-                    <div class="card-title">
-                        <h2>@employee.Name</h2>
-                        <p>@employee.Department</p>
-                        <p> @employee.Position</p>
-                    </div>
-                </div>
-            </div> *@
-
             <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
                 <div style="display:flex; padding:10px">
                     <div style="display:flex; align-items:center">
@@ -302,6 +288,7 @@
 
         detailsSpan.click(function () {
             detailsModal.css("display", "none");
+            location.reload(); 
         });
 
         // Close modal when clicking outside
