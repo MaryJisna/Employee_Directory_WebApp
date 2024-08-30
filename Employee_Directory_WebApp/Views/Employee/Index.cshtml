@@ -2,77 +2,124 @@
 
 @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
+<style>
+    .view-details {
+        transition: background-color 0.3s, color 0.3s, cursor 0.3s;
+    }
+
+        .view-details:hover {
+            background-color: skyblue;
+            color: white;
+            cursor: pointer;
+        }
+
+            .view-details:hover .card-title h2,
+            .view-details:hover .card-title p {
+                color: white; /* Text color on hover */
+            }
+
+    .cardstyle {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .card-title h2, .card-title p {
+        margin: 0;
+        padding: 0;
+    }
+
+    .card-title {
+        margin-left: 10px;
+    }
+
+    .avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+</style>
+
+
 <div style="max-height:100vh;  overflow-y: auto;">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee_Directory_WebApp</a> *@
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <div class="container-fluid">
+            @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee_Directory_WebApp</a> *@
 
-                <div class="d-flex align-items-center flex-grow-1">
-                    <!-- Search Field -->
-                    <div class="input-group me-3">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search">
-                        <span class="input-group-text">
-                            <i class="bi bi-search"></i>
-                        </span>
-                    </div>
-
-                    <!-- Filter Fields -->
-                    <select class="form-select me-2" aria-label="Location">
-                        <option selected>Location</option>
-                        <option value="1">Location 1</option>
-                        <option value="2">Location 2</option>
-                        <!-- Add more options as needed -->
-                    </select>
-
-                    <select class="form-select me-2" aria-label="Department">
-                        <option selected>Department</option>
-                        <option value="1">Department 1</option>
-                        <option value="2">Department 2</option>
-                        <!-- Add more options as needed -->
-                    </select>
-
-                    <!-- Clear Button -->
-                    <button class="btn btn-secondary me-2" type="button">Clear</button>
+            <div class="d-flex align-items-center flex-grow-1">
+                <!-- Search Field -->
+                <div class="input-group me-3">
+                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search">
+                    <span class="input-group-text">
+                        <i class="bi bi-search"></i>
+                    </span>
                 </div>
+
+                <!-- Filter Fields -->
+                <select class="form-select me-2" aria-label="Location">
+                    <option selected>Location</option>
+                    <option value="1">Location 1</option>
+                    <option value="2">Location 2</option>
+                    <!-- Add more options as needed -->
+                </select>
+
+                <select class="form-select me-2" aria-label="Department">
+                    <option selected>Department</option>
+                    <option value="1">Department 1</option>
+                    <option value="2">Department 2</option>
+                    <!-- Add more options as needed -->
+                </select>
+
+                <!-- Clear Button -->
+                <button class="btn btn-secondary me-2" type="button">Clear</button>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
+</header>
 
 
 
-    <h1>Employee List</h1>
+<h1>Employee List</h1>
 
-    <!-- Add Employee Button -->
-    <div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
-        <button id="addEmployeeBtn" class="btn">Add Employee</button>
-    </div>
+<!-- Add Employee Button -->
+<div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
+    <button id="addEmployeeBtn" class="btn">Add Employee</button>
+</div>
 
-    <!-- Employee Cards -->
-    <div class="card-container" style="max-height: 70vh; overflow-y: auto;">
-        @foreach (var employee in Model)
+<!-- Employee Cards -->
+<div class="card-container" style="max-height: 70vh; overflow-y: auto;">
+    @foreach (var employee in Model)
+    
+    {
 
-
-        {
-            <div class="card">
-                <div class="card-header">
+@*             <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
+                <div style="display:flex; padding:10px " >
+                    <div style="display:flex; align-items:center">
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
+                    </div>
                     <div class="card-title">
                         <h2>@employee.Name</h2>
                         <p>@employee.Department</p>
+                        <p> @employee.Position</p>
                     </div>
                 </div>
-                @*       <div class="card-body">
-            <p><strong>Position:</strong> @employee.Position</p>
-            <a href="@Url.Action("Details", "Employee", new { id = employee.Id })" class="btn">View Details</a>
             </div> *@
-                <div class="card-body">
-                    <p><strong>Position:</strong> @employee.Position</p>
-                    <button class="btn view-details" data-employee-id="@employee.Id">View Details</button>
+
+            <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
+                <div style="display:flex; padding:10px">
+                    <div style="display:flex; align-items:center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
+                    </div>
+                    <div class="card-title">
+                        <h2>@employee.Name</h2>
+                        <p>@employee.Department</p>
+                        <p>@employee.Position</p>
+                    </div>
                 </div>
             </div>
-        }
-    </div>
+    }
+</div>
+
 </div>
 
 <!-- Modal for Adding Employee -->
@@ -141,10 +188,6 @@
         <div id="employeeDetailsContent"></div>
     </div>
 </div>
-
-
-
-
 
 
 <!-- Add styles and JavaScript for modal -->
