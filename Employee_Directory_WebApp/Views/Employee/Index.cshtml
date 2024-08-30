@@ -3,25 +3,27 @@
 @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
 <style>
+
     .view-details {
         transition: background-color 0.3s, color 0.3s, cursor 0.3s;
     }
 
-        .view-details:hover {
-            background-color: #2d85eb;
-            color: white;
-            cursor: pointer;
-        }
+    .view-details:hover {
+        background-color: #2d85eb;
+        color: white;
+        cursor: pointer;
+     }
 
-            .view-details:hover .card-title h2,
-            .view-details:hover .card-title p {
-                color: white; /* Text color on hover */
-            }
+    .view-details:hover .card-title h2,
+    .view-details:hover .card-title p {
+          color: white;
+     }
 
     .cardstyle {
         border-radius: 8px;
         overflow: hidden;
     }
+
 
     .card-title h2, .card-title p {
         margin: 0;
@@ -41,41 +43,46 @@
 
 
 <div style="max-height:100vh;  overflow-y: auto;">
-<header>
-    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee_Directory_WebApp</a> *@
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center flex-grow-1">
+                    <!-- Search Field -->
+                    <div class="input-group me-3">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search..." aria-label="Search">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                    </div>
+                    <!-- Filter Fields -->
+                    <select id="positionFilter" class="form-select me-2" aria-label="Position">
+                        <option value="">All Position</option>
+                        @foreach (var Position in Model.Select(e => e.Position).Distinct())
 
-            <div class="d-flex align-items-center flex-grow-1">
-                <!-- Search Field -->
-                <div class="input-group me-3">
-                    <input type="text" class="form-control" placeholder="Search..." aria-label="Search">
-                    <span class="input-group-text">
-                        <i class="bi bi-search"></i>
-                    </span>
+                        {
+                            <option value="@Position">@Position</option>
+                        }
+                    </select>
+                    <select id="departmentFilter" class="form-select me-2" aria-label="Department">
+                        <option value="">All Departments</option>
+                        @foreach (var department in Model.Select(e => e.Department).Distinct())
+
+                        {
+                            <option value="@department">@department</option>
+                        }
+                    </select>
+                    <!-- Sort Field -->
+                    <select id="sortField" class="form-select me-2" aria-label="Sort By">
+                        <option value="name">Name</option>
+                        <option value="department">Department</option>
+                        <option value="position">Position</option>
+                    </select>
+                    <!-- Clear Button -->
+                    <button id="clearFilters" class="btn btn-secondary me-2" type="button">Clear</button>
                 </div>
-
-                <!-- Filter Fields -->
-                <select class="form-select me-2" aria-label="Location">
-                    <option selected>Location</option>
-                    <option value="1">Location 1</option>
-                    <option value="2">Location 2</option>
-                    <!-- Add more options as needed -->
-                </select>
-
-                <select class="form-select me-2" aria-label="Department">
-                    <option selected>Department</option>
-                    <option value="1">Department 1</option>
-                    <option value="2">Department 2</option>
-                    <!-- Add more options as needed -->
-                </select>
-
-                <!-- Clear Button -->
-                <button class="btn btn-secondary me-2" type="button">Clear</button>
             </div>
-        </div>
-    </nav>
-</header>
+        </nav>
+    </header>
 
 
 
@@ -91,7 +98,24 @@
     @foreach (var employee in Model)
     
     {
-            <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
+@*              <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
+                 <div style="display:flex; padding:10px">
+                     <div style="display:flex; align-items:center">
+                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
+                     </div>
+                     <div class="card-title">
+                         <h2>@employee.Name</h2>
+                         <p>@employee.Department</p>
+                         <p>@employee.Position</p>
+                     </div>
+                 </div>
+             </div> *@
+            <div class="view-details cardstyle"
+                 data-employee-id="@employee.Id"
+                 data-name="@employee.Name"
+                 data-department="@employee.Department"
+                 data-position="@employee.Position"
+                 style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
                 <div style="display:flex; padding:10px">
                     <div style="display:flex; align-items:center">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
@@ -335,4 +359,48 @@
     });
 </script>
 
+<script>
+    $(document).ready(function () {
+        function filterAndSortEmployees() {
+            var searchTerm = $('#searchInput').val().toLowerCase();
+            var position = $('#positionFilter').val();
+            var department = $('#departmentFilter').val();
+            var sortField = $('#sortField').val();
 
+            console.log("Position:", position, "Department:", department);
+
+            $('.view-details').each(function () {
+                var $this = $(this);
+                var name = $this.data('name').toLowerCase();
+                var dept = $this.data('department').toLowerCase();
+                var pos = $this.data('position').toLowerCase();
+
+                var matchSearch = name.includes(searchTerm) || dept.includes(searchTerm) || pos.includes(searchTerm);
+                var matchPosition = position === '' || pos === position.toLowerCase();
+                var matchDepartment = department === '' || dept === department.toLowerCase();
+
+                $this.toggle(matchSearch && matchPosition && matchDepartment);
+            });
+
+            var $employees = $('.view-details').toArray();
+            $employees.sort(function (a, b) {
+                var aVal = $(a).data(sortField).toLowerCase();
+                var bVal = $(b).data(sortField).toLowerCase();
+                return aVal.localeCompare(bVal);
+            });
+
+            $('#employeeCards').html($employees);
+        }
+
+        $('#searchInput, #positionFilter, #departmentFilter, #sortField').on('input change', filterAndSortEmployees);
+
+        $('#clearFilters').click(function () {
+            $('#searchInput').val('');
+            $('#positionFilter, #departmentFilter').val('');
+            $('#sortField').val('name');
+            filterAndSortEmployees();
+        });
+
+        filterAndSortEmployees();
+    });
+</script>
