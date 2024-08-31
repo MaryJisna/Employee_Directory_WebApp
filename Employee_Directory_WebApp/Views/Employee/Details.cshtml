@@ -122,7 +122,7 @@
     };
 
     var random = new Random();
-    var colors = new List<string> { "#FFEBEE", "#E3F2FD", "#E8F5E9", "#FFFDE7", "#F3E5F5" };
+    var colors = new List<string> { "#FFEBEE", "#FFFDE7", "#F3E5F5", "#E3F2FD", };
 }
 
 <style>
@@ -263,7 +263,13 @@
  
 </style>
 
-<div id="parent_div" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 100%; margin: 0 auto;">
+@* <div id="parent_div" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 100%; margin:0; background-color:aqua"> *@
+<div id="parent_div" style=" padding: 20px; border-radius: 10px; width: 100%; margin:0;  ">
+    <!-- Close Button -->
+    <div style="display: flex; justify-content: flex-end; width: 100%;">
+        <span class="close" style="font-size: 24px; cursor: pointer;" onclick="window.location.href='@Url.Action("Index", "Employee")'">&times;</span>
+    </div>
+    @* <a href="@Url.Action("Index", "Employee")>Back to List</a> *@
     <!-- First Section: Employee Details with Light Blue Background -->
     <div class=profile-head; style="background-color: lightblue; padding: 20px; display: flex; position: relative;">
         <!-- Profile Image -->
@@ -296,32 +302,30 @@
     <div style="margin-left:20px; display:flex; gap:30px;">
         <p><strong>Team:</strong> <span class="team-name">@Model.TeamName</span></p>
         <p><strong>Reporting Manager:</strong> <span class="manager-name">@Model.ManagerName</span></p>
-      
+
     </div>
 
     <div style="display: flex; gap:5px">
         <div id="card-1" style="flex: 1; border: 1px solid #000; display: flex; height:180px; padding:10px;
                         box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
             <div style="flex: 1;">
-                <p style="margin: 0; padding: 0;">Days Present</p>
-                <div class="leave-sub-card" >
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Days Present</p>
+                <div class="leave-sub-card">
                     <p style="margin: 0; padding: 0; font-size:35px; color:dodgerblue">29</p>
                 </div>
             </div>
             <div style="flex: 1;">
-                <p style="margin: 0; padding: 0;">Casual Leaves </p>
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Casual Leaves </p>
                 <div class="container" style="height:130px">
-                    <div class="chart-container" >
+                    <div class="chart-container">
                         <div style="display :flex">
                             <div class="bar" style="width: calc(100% * (4 - 1) / (10 - 1)); background-color: #4CAF50;">
-                      
                             </div>
                             <span class="bar-label">4</span>
-                            </div>
+                        </div>
 
                         <div style="display :flex">
                             <div class="bar" style="width: calc(100% * (8 - 1) / (10 - 1)); background-color: darkslateblue;">
-
                             </div>
                             <span class="bar-label">8</span>
                         </div>
@@ -334,12 +338,12 @@
                             <span class="bar-label1">Taken</span>
                         </div>
 
-              
+
                     </div>
                 </div>
             </div>
             <div style="flex: 1;">
-                <p style="margin: 0; padding: 0;">Casual Leaves </p>
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Sick Leaves </p>
                 <div class="container" style="height:130px">
                     <div class="chart-container">
                         <div style="display :flex">
@@ -371,7 +375,7 @@
 
         <div id="leave-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 180px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
             <div style="display:flex; width:100%; align-items:center; justify-content:center;">
-                <p style="margin: 0; padding: 0;">Leave Applications</p>
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Leave Applications</p>
             </div>
             <div style="flex: 1; overflow-y: hidden; border:1px solid #000; border-radius:4px; background-color:white">
                 <table class="table" style="width: 100%; border-collapse: collapse;">
@@ -399,7 +403,7 @@
                 </div>
             </div>
         </div>
-       
+
 
     </div>
 
@@ -408,7 +412,7 @@
 
         <div id="leave-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 220px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
             <div style="display:flex; width:100%; align-items:center; justify-content:center;">
-                <p style="margin: 0; padding: 0;">Notes</p>
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Notes</p>
             </div>
             <div style="flex: 1; overflow-y: auto; border:1px solid #000; border-radius:4px; background-color:white; padding: 10px;">
                 @foreach (var note in notes)
@@ -421,9 +425,9 @@
                 }
             </div>
         </div>
-        <div  style="flex: 1; padding:0px 10px 0px 10px; ">
+        <div style="flex: 1; padding:0px 10px 0px 10px; ">
 
-            <div id="probation-card" style="flex: 1; border: 1px solid #ccc; display: flex; flex-direction: column; height: 90px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #f9f9f9;">
+            <div id="probation-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 90px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #f9f9f9;">
                 <div style="display:flex; width:100%; align-items:center; justify-content:center;">
                     <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Probation</p>
                 </div>
@@ -437,10 +441,10 @@
             </div>
 
 
-        <div id="probation-card" style=" margin-top:10px; flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 120px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">  
-            <div style="display:flex; width:100%; align-items:center; justify-content:center;">
-                <p style="margin: 0; padding: 0;">Salary</p>
-            </div>
+            <div id="probation-card" style=" margin-top:10px; flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 120px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+                <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                    <p style="margin: 0; padding: 0;">Salary</p>
+                </div>
                 <div style="display:flex; gap:10px;">
                     <div class="salary-innercard">
                         <p style="font-size:13px">Accounting accessible</p>
@@ -451,16 +455,16 @@
                         <p style="font-size:16px; color:cornflowerblue"> 55000</p>
                     </div>
                 </div>
+            </div>
+
+
+
+
+
         </div>
-     
-
-
-
-
     </div>
-</div>
 
- 
+
     <!-- Back to List Button -->
     <div style="text-align: center; margin-top: 20px;">
         <a href="@Url.Action("Index", "Employee")" class="btn btn-primary">Back to List</a>

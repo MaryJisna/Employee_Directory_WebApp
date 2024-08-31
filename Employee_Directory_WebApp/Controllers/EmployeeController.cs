@@ -7,16 +7,19 @@ using Employee_Directory_WebApp.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using Employee_Directory_WebApp.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Employee_Directory_WebApp.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<EmployeeController> _logger;  // Add logger
 
-        public EmployeeController(ApplicationDbContext context)
+        public EmployeeController(ApplicationDbContext context, ILogger<EmployeeController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index(string searchString, string location, string department, string sortOrder)
@@ -66,6 +69,8 @@ namespace Employee_Directory_WebApp.Controllers
                     employees = employees.OrderBy(s => s.Name);
                     break;
             }
+            // Log the query for debugging
+            _logger.LogInformation("Employees query: {Query}", employees.ToQueryString());
 
             return View(await employees.AsNoTracking().ToListAsync());
         }

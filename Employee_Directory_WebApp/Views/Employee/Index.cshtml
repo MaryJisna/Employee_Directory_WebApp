@@ -39,20 +39,33 @@
         width: 50px;
         height: 50px;
     }
+
+
+    .sort-link {
+        color: #007bff;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+
+        .sort-link:hover {
+            text-decoration: underline;
+        }
+
+
 </style>
 
 
 <div style="max-height:100vh;  overflow-y: auto;">
-    <header>
+    <header style="margin-bottom:50px ;">
         <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div class="d-flex align-items-center flex-grow-1">
                     <!-- Search Field -->
                     <div class="input-group me-3">
-                        <input type="text" id="searchInput" class="form-control" placeholder="Search..." aria-label="Search">
                         <span class="input-group-text">
                             <i class="bi bi-search"></i>
                         </span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search..." aria-label="Search">
                     </div>
                     <!-- Filter Fields -->
                     <select id="positionFilter" class="form-select me-2" aria-label="Position">
@@ -72,11 +85,26 @@
                         }
                     </select>
                     <!-- Sort Field -->
+@*                     <select id="sortField" class="form-select me-2" aria-label="Sort By">
+                        <option value="name">Name</option>
+                        <option value="department">Department</option>
+                        <option value="position">Position</option>
+                    </select> *@
+
+                    <!-- Sort Field using Select Dropdown -->
                     <select id="sortField" class="form-select me-2" aria-label="Sort By">
+                        <option value="">Sort By</option>
                         <option value="name">Name</option>
                         <option value="department">Department</option>
                         <option value="position">Position</option>
                     </select>
+@* 
+                     <div>
+                         <a href="@Url.Action("Index", new { sortOrder = ViewData["NameSortParm"] })" class="sort-link">Name</a>
+                         <a href="@Url.Action("Index", new { sortOrder = ViewData["DepartmentSortParm"] })" class="sort-link">Department</a>
+                         <a href="@Url.Action("Index", new { sortOrder = ViewData["PositionSortParm"] })" class="sort-link">Position</a>
+                     </div> *@
+
                     <!-- Clear Button -->
                     <button id="clearFilters" class="btn btn-secondary me-2" type="button">Clear</button>
                 </div>
@@ -86,11 +114,11 @@
 
 
 
-<h1>Employee List</h1>
+@* <h1>Employee List</h1> *@
 
 <!-- Add Employee Button -->
 <div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
-    <button id="addEmployeeBtn" class="btn">Add Employee</button>
+        <button id="addEmployeeBtn" class="btn btn-secondary me-2" type="button">Add Employee</button>
 </div>
 
 <!-- Employee Cards -->
@@ -190,12 +218,20 @@
 </div>
 
 <!-- Modal for Employee Details -->
-<div id="employeeDetailsModal" class="modal">
-    <div class="modal-content">
+@* <div id="employeeDetailsModal" class="modal" style="margin:0; padding:0;">
+    <div class="modal-content" style="width: 50%; margin: auto;">
         <div class="modal-header" style="display: flex; justify-content: flex-end; align-items: center;">
             <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
         </div>
         <div id="employeeDetailsContent"></div>
+    </div>
+</div> *@
+
+<!-- Modal for Employee Details -->
+<!-- Modal for Employee Details -->
+<div id="employeeDetailsModal" class="modal">
+    <div id="employeeDetailsContent" style="width: 60%; max-width: 800px; margin: 0 auto; padding: 0; border-radius: 22px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <!-- Your content goes here -->
     </div>
 </div>
 
@@ -254,6 +290,8 @@
             padding: 10px 20px;
         }
 </style>
+
+@section Scripts {
 <script>
     var modal = document.getElementById("addEmployeeModal");
     var btn = document.getElementById("addEmployeeBtn");
@@ -359,7 +397,7 @@
     });
 </script>
 
-<script>
+@* <script>
     $(document).ready(function () {
         function filterAndSortEmployees() {
             var searchTerm = $('#searchInput').val().toLowerCase();
@@ -367,13 +405,15 @@
             var department = $('#departmentFilter').val();
             var sortField = $('#sortField').val();
 
-            console.log("Position:", position, "Department:", department);
+            console.log("Position:", position, "Department:", department, sortField);
 
             $('.view-details').each(function () {
                 var $this = $(this);
                 var name = $this.data('name').toLowerCase();
                 var dept = $this.data('department').toLowerCase();
                 var pos = $this.data('position').toLowerCase();
+
+                console.log("Positiondd:", pos, "Departmenddt:", dept,);
 
                 var matchSearch = name.includes(searchTerm) || dept.includes(searchTerm) || pos.includes(searchTerm);
                 var matchPosition = position === '' || pos === position.toLowerCase();
@@ -404,3 +444,64 @@
         filterAndSortEmployees();
     });
 </script>
+ *@
+
+<script>
+    $(document).ready(function () {
+        function filterEmployees() {
+            var searchTerm = $('#searchInput').val().toLowerCase();
+            var position = $('#positionFilter').val();
+            var department = $('#departmentFilter').val();
+
+            $('.view-details').each(function () {
+                var $this = $(this);
+                var name = $this.data('name').toLowerCase();
+                var dept = $this.data('department').toLowerCase();
+                var pos = $this.data('position').toLowerCase();
+
+                var matchSearch = name.includes(searchTerm) || dept.includes(searchTerm) || pos.includes(searchTerm);
+                var matchPosition = position === '' || pos === position.toLowerCase();
+                var matchDepartment = department === '' || dept === department.toLowerCase();
+
+                $this.toggle(matchSearch && matchPosition && matchDepartment);
+            });
+        }
+
+        $('#searchInput, #positionFilter, #departmentFilter').on('input change', filterEmployees);
+
+        $('#clearFilters').click(function () {
+            $('#searchInput').val('');
+            $('#positionFilter, #departmentFilter').val('');
+            filterEmployees();
+        });
+
+        filterEmployees();
+    });
+</script>
+
+<script>
+    // Handle sorting based on the dropdown selection
+    document.getElementById('sortField').addEventListener('change', function () {
+        var selectedValue = this.value;
+        var sortOrder = '';
+
+        switch (selectedValue) {
+            case 'name':
+                sortOrder = '@ViewData["NameSortParm"]';
+                break;
+            case 'department':
+                sortOrder = '@ViewData["DepartmentSortParm"]';
+                break;
+            case 'position':
+                sortOrder = '@ViewData["PositionSortParm"]';
+                break;
+            default:
+                sortOrder = '';
+        }
+
+        var url = '@Url.Action("Index", new { sortOrder = "__sortOrder__" })'.replace('__sortOrder__', sortOrder);
+        window.location.href = url;
+    });
+</script>
+
+}
