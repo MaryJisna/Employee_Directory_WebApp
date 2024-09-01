@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Employee_Directory_WebApp.Data;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace Employee_Directory_WebApp.Controllers
 {
@@ -15,11 +16,13 @@ namespace Employee_Directory_WebApp.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger<EmployeeController> _logger;  // Add logger
+        private readonly IWebHostEnvironment _environment;
 
-        public EmployeeController(ApplicationDbContext context, ILogger<EmployeeController> logger)
+        public EmployeeController(ApplicationDbContext context, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
         {
             _context = context;
             _logger = logger;
+            _environment = environment;
         }
 
         public async Task<IActionResult> Index(string searchString, string location, string department, string sortOrder)
@@ -90,19 +93,53 @@ namespace Employee_Directory_WebApp.Controllers
             return View(employee);
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
+        //{
+        //    ModelState.Remove(nameof(employee.Leaves));
+        //    ModelState.Remove(nameof(employee.Attendances));
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Employees.Add(employee);
+        //        await _context.SaveChangesAsync();
+        //        return Json(new { success = true, message = "Employee added successfully" });
+        //    }
+
+        //    return Json(new { success = false, message = "Failed to add employee" });
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromForm] Employee employee, IFormFile profileImage)
         {
             ModelState.Remove(nameof(employee.Leaves));
             ModelState.Remove(nameof(employee.Attendances));
-
+            ModelState.Remove(nameof(employee.ProfileImagePath));
             if (ModelState.IsValid)
             {
+                if (profileImage != null && profileImage.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + profileImage.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await profileImage.CopyToAsync(fileStream);
+                    }
+
+                    employee.ProfileImagePath = "/uploads/" + uniqueFileName;
+                }
+
                 _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
                 return Json(new { success = true, message = "Employee added successfully" });
             }
-
             return Json(new { success = false, message = "Failed to add employee" });
         }
     }
