@@ -14,10 +14,11 @@
         cursor: pointer;
      }
 
-    .view-details:hover .card-title h2,
-    .view-details:hover .card-title p {
-          color: white;
-     }
+            .view-details:hover .card-title h2,
+            .view-details:hover .card-title h6,
+            .view-details:hover .card-title p {
+                color: white;
+            }
 
     .cardstyle {
         border-radius: 8px;
@@ -25,7 +26,9 @@
     }
 
 
-    .card-title h2, .card-title p {
+
+
+    .card-title h6, .card-title p {
         margin: 0;
         padding: 0;
     }
@@ -38,6 +41,10 @@
         border-radius: 50%;
         width: 50px;
         height: 50px;
+    }
+
+    .name-text {
+        color: #3977e3
     }
 
 
@@ -98,12 +105,6 @@
                         <option value="department">Department</option>
                         <option value="position">Position</option>
                     </select>
-@* 
-                     <div>
-                         <a href="@Url.Action("Index", new { sortOrder = ViewData["NameSortParm"] })" class="sort-link">Name</a>
-                         <a href="@Url.Action("Index", new { sortOrder = ViewData["DepartmentSortParm"] })" class="sort-link">Department</a>
-                         <a href="@Url.Action("Index", new { sortOrder = ViewData["PositionSortParm"] })" class="sort-link">Position</a>
-                     </div> *@
 
                     <!-- Clear Button -->
                     <button id="clearFilters" class="btn btn-secondary me-2" type="button">Clear</button>
@@ -126,18 +127,6 @@
     @foreach (var employee in Model)
     
     {
-@*              <div class="view-details cardstyle" data-employee-id="@employee.Id" style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
-                 <div style="display:flex; padding:10px">
-                     <div style="display:flex; align-items:center">
-                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
-                     </div>
-                     <div class="card-title">
-                         <h2>@employee.Name</h2>
-                         <p>@employee.Department</p>
-                         <p>@employee.Position</p>
-                     </div>
-                 </div>
-             </div> *@
             <div class="view-details cardstyle"
                  data-employee-id="@employee.Id"
                  data-name="@employee.Name"
@@ -149,7 +138,7 @@
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
                     </div>
                     <div class="card-title">
-                        <h2>@employee.Name</h2>
+                        <h6 class="name-text">@employee.Name</h6>
                         <p>@employee.Department</p>
                         <p>@employee.Position</p>
                     </div>
@@ -217,17 +206,7 @@
     </div>
 </div>
 
-<!-- Modal for Employee Details -->
-@* <div id="employeeDetailsModal" class="modal" style="margin:0; padding:0;">
-    <div class="modal-content" style="width: 50%; margin: auto;">
-        <div class="modal-header" style="display: flex; justify-content: flex-end; align-items: center;">
-            <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
-        </div>
-        <div id="employeeDetailsContent"></div>
-    </div>
-</div> *@
 
-<!-- Modal for Employee Details -->
 <!-- Modal for Employee Details -->
 <div id="employeeDetailsModal" class="modal">
     <div id="employeeDetailsContent" style="width: 60%; max-width: 800px; margin: 0 auto; padding: 0; border-radius: 22px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
@@ -396,55 +375,6 @@
         })
     });
 </script>
-
-@* <script>
-    $(document).ready(function () {
-        function filterAndSortEmployees() {
-            var searchTerm = $('#searchInput').val().toLowerCase();
-            var position = $('#positionFilter').val();
-            var department = $('#departmentFilter').val();
-            var sortField = $('#sortField').val();
-
-            console.log("Position:", position, "Department:", department, sortField);
-
-            $('.view-details').each(function () {
-                var $this = $(this);
-                var name = $this.data('name').toLowerCase();
-                var dept = $this.data('department').toLowerCase();
-                var pos = $this.data('position').toLowerCase();
-
-                console.log("Positiondd:", pos, "Departmenddt:", dept,);
-
-                var matchSearch = name.includes(searchTerm) || dept.includes(searchTerm) || pos.includes(searchTerm);
-                var matchPosition = position === '' || pos === position.toLowerCase();
-                var matchDepartment = department === '' || dept === department.toLowerCase();
-
-                $this.toggle(matchSearch && matchPosition && matchDepartment);
-            });
-
-            var $employees = $('.view-details').toArray();
-            $employees.sort(function (a, b) {
-                var aVal = $(a).data(sortField).toLowerCase();
-                var bVal = $(b).data(sortField).toLowerCase();
-                return aVal.localeCompare(bVal);
-            });
-
-            $('#employeeCards').html($employees);
-        }
-
-        $('#searchInput, #positionFilter, #departmentFilter, #sortField').on('input change', filterAndSortEmployees);
-
-        $('#clearFilters').click(function () {
-            $('#searchInput').val('');
-            $('#positionFilter, #departmentFilter').val('');
-            $('#sortField').val('name');
-            filterAndSortEmployees();
-        });
-
-        filterAndSortEmployees();
-    });
-</script>
- *@
 
 <script>
     $(document).ready(function () {
