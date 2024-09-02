@@ -162,7 +162,14 @@
     <div class=profile-head; style="background-color: lightblue; padding: 20px; display: flex; position: relative;">
         <!-- Profile Image -->
         <div style="position: absolute; top: 60px; left: 10px;">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="Avatar" style="border-radius: 50%; width: 130px; height: 130px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            @* <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="Avatar" style="border-radius: 50%; width: 130px; height: 130px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);"> *@
+
+            <img src="@(string.IsNullOrEmpty(@Model.ProfileImagePath)
+                                   ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s"
+                                   : @Model.ProfileImagePath)"
+                 alt="@@Model.Name's Avatar"
+                 style="border-radius: 50%; width: 130px; height: 130px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                 class="avatar" />
         </div>
 
         <!-- Employee Details -->
