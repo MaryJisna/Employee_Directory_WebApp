@@ -284,7 +284,7 @@
                 </table>
                 <div style="overflow-y: auto; height: 60px;">
                     <table class="table" style="width: 100%; border-collapse: collapse;">
-                        <tbody>
+@*                         <tbody>
                             @foreach (var leave in Model.Leaves)
                             {
                                 <tr>
@@ -292,6 +292,38 @@
                                     <td style="width: 33%;">@leave.LeaveType</td>
                                     <td style="width: 34%;">@leave.Status</td>
                                 </tr>
+                            }
+                        </tbody> *@
+                        <tbody>
+                            @if (Model.Leaves != null && Model.Leaves.Any())
+                            {
+                                foreach (var leave in Model.Leaves)
+                                {
+                                    <tr>
+                                        <td style="width: 33%;">@leave.LeaveDate.ToShortDateString()</td>
+                                        <td style="width: 33%;">@leave.LeaveType</td>
+                                        <td style="width: 34%;">@leave.Status</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                // Sample data to display when Leaves is empty
+                                var sampleLeaves = new List<(string LeaveDate, string LeaveType, string Status)>
+                            {
+                            ("01/09/2023", "Casual Leave", "Approved"),
+                            ("05/09/2023", "Sick Leave", "Pending"),
+                            ("12/09/2023", "Casual Leave", "Rejected")
+                            };
+
+                                foreach (var leave in sampleLeaves)
+                                {
+                                    <tr>
+                                        <td style="width: 33%;">@leave.LeaveDate</td>
+                                        <td style="width: 33%;">@leave.LeaveType</td>
+                                        <td style="width: 34%;">@leave.Status</td>
+                                    </tr>
+                                }
                             }
                         </tbody>
                     </table>
