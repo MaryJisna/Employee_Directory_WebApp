@@ -1,52 +1,440 @@
-﻿@*  @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
+﻿
 
- <h1>Employee List</h1>
+@model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
- <table class="table">
-     <thead>
-         <tr>
-             <th>Name</th>
-             <th>Department</th>
-             <th>Position</th>
-             <th>Details</th>
-         </tr>
-     </thead>
-     <tbody>
-         @foreach (var employee in Model)
+<style>
 
-         {
-             <tr>
-                 <td>@employee.Name</td>
-                 <td>@employee.Department</td>
-                 <td>@employee.Position</td>
-                 <td><a href="@Url.Action("Details", "Employee", new { id = employee.Id })">View</a></td>
-             </tr>
-         }
-     </tbody>
-   </table> *@
+    .view-details {
+        transition: background-color 0.3s, color 0.3s, cursor 0.3s;
+    }
+
+    .view-details:hover {
+        background-color: #2d85eb;
+        color: white;
+        cursor: pointer;
+     }
+
+            .view-details:hover .card-title h2,
+            .view-details:hover .card-title h6,
+            .view-details:hover .card-title p {
+                color: white;
+            }
+
+    .cardstyle {
+        border-radius: 8px;
+        overflow: hidden;
+    }
 
 
-   @model IEnumerable<Employee_Directory_WebApp.Models.Employee>
 
-<h1>Employee List</h1>
 
-<div class="card-container">
-    @foreach (var employee in Model)
+    .card-title h6, .card-title p {
+        margin: 0;
+        padding: 0;
+    }
 
-    {
-        <div class="card">
-            <div class="card-header">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" />
-                <div class="card-title">
-                    <h2>@employee.Name</h2>
-                    <p>@employee.Department</p>
+    .card-title {
+        margin-left: 10px;
+    }
+
+    .avatar {
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+    }
+
+    .name-text {
+        color: #3977e3
+    }
+
+
+    .sort-link {
+        color: #007bff;
+        text-decoration: none;
+        margin-right: 10px;
+    }
+
+
+
+</style>
+
+
+<div style="max-height:100vh;  overflow-y: auto;">
+    <header style="margin-bottom:50px ;">
+        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <div class="d-flex align-items-center flex-grow-1">
+                    <!-- Search Field -->
+                    <div class="input-group me-3">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="form-control" placeholder="Search..." aria-label="Search">
+                    </div>
+                    <!-- Filter Fields -->
+                    <select id="positionFilter" class="form-select me-2" aria-label="Position">
+                        <option value="">All Position</option>
+                        @foreach (var Position in Model.Select(e => e.Position).Distinct())
+
+                        {
+                            <option value="@Position">@Position</option>
+                        }
+                    </select>
+                    <select id="departmentFilter" class="form-select me-2" aria-label="Department">
+                        <option value="">All Departments</option>
+                        @foreach (var department in Model.Select(e => e.Department).Distinct())
+
+                        {
+                            <option value="@department">@department</option>
+                        }
+                    </select>
+                    <!-- Sort Field -->
+@*                     <select id="sortField" class="form-select me-2" aria-label="Sort By">
+                        <option value="name">Name</option>
+                        <option value="department">Department</option>
+                        <option value="position">Position</option>
+                    </select> *@
+
+                    <!-- Sort Field using Select Dropdown -->
+                    <select id="sortField" class="form-select me-2" aria-label="Sort By">
+                        <option value="">Sort By</option>
+                        <option value="name">Name</option>
+                        <option value="department">Department</option>
+                        <option value="position">Position</option>
+                    </select>
+
+                    <!-- Clear Button -->
+                    <button id="clearFilters" class="btn btn-secondary me-2" type="button">Clear</button>
                 </div>
             </div>
-            <div class="card-body">
-                <p><strong>Position:</strong> @employee.Position</p>
-                <a href="@Url.Action("Details", "Employee", new { id = employee.Id })" class="btn">View Details</a>
+        </nav>
+    </header>
+
+
+
+@* <h1>Employee List</h1> *@
+
+<!-- Add Employee Button -->
+<div class="add-employee-container" style="text-align: right; margin-bottom: 20px;">
+        <button id="addEmployeeBtn" class="btn btn-secondary me-2" type="button">Add Employee</button>
+</div>
+
+<!-- Employee Cards -->
+<div class="card-container" style="max-height: 70vh; overflow-y: auto;">
+    @foreach (var employee in Model)
+    
+    {
+            <div class="view-details cardstyle"
+                 data-employee-id="@employee.Id"
+                 data-name="@employee.Name"
+                 data-department="@employee.Department"
+                 data-position="@employee.Position"
+                 style="box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px; width:300px; height:100px;">
+                <div style="display:flex; padding:10px">
+                    <div style="display:flex; align-items:center">
+                 @*        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="@employee.Name's Avatar" class="avatar" /> *@
+                        <img src="@(string.IsNullOrEmpty(employee.ProfileImagePath)
+                                   ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s"
+                                   : employee.ProfileImagePath)"
+                             alt="@employee.Name's Avatar"
+                             class="avatar" />
+                    </div>
+                    <div class="card-title">
+                        <h6 class="name-text">@employee.Name</h6>
+                        <p>@employee.Department</p>
+                        <p>@employee.Position</p>
+                    </div>
+                </div>
             </div>
-        </div>
     }
 </div>
 
+</div>
+
+<!-- Modal for Adding Employee -->
+<div id="addEmployeeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header" style="display: flex; justify-content: flex-end; align-items: center;">
+            <span class="close" style="font-size: 24px; cursor: pointer;">&times;</span>
+        </div>
+        <h2>Add Employee</h2>
+        <form action="@Url.Action("AddEmployee", "Employee")" method="post" class="employee-form" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="Name" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="department">Department:</label>
+                <input type="text" id="department" name="Department" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="position">Position:</label>
+                <input type="text" id="position" name="Position" class="form-control" required />
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="Address" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="dateOfJoining">Date of Joining:</label>
+                <input type="date" id="dateOfJoining" name="DateOfJoining" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="ctc">CTC:</label>
+                <input type="number" id="ctc" name="CTC" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="salary">Salary:</label>
+                <input type="number" id="salary" name="Salary" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="teamName">Team Name:</label>
+                <input type="text" id="teamName" name="TeamName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="managerName">Manager Name:</label>
+                <input type="text" id="managerName" name="ManagerName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="totalExperience">Total Experience (in months):</label>
+                <input type="number" id="totalExperience" name="TotalExperience" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="inHouseExperience">In-House Experience (in months):</label>
+                <input type="number" id="inHouseExperience" name="InHouseExperience" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="profileImage">Profile Image:</label>
+                <input type="file" id="profileImage" name="profileImage" class="form-control" accept="image/*" />
+            </div>
+            <button type="submit" class="btn" style="grid-column: span 2;">Add Employee</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal for Employee Details -->
+<div id="employeeDetailsModal" class="modal">
+    <div id="employeeDetailsContent" style="width: 60%; max-width: 800px; margin: 0 auto; padding: 0; border-radius: 22px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+        <!-- Your content goes here -->
+    </div>
+</div>
+
+
+<!-- Add styles and JavaScript for modal -->
+<!-- CSS for Modal and Two-Column Layout -->
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        padding-top: 60px;
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 5% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        position: relative;
+    }
+
+    .close {
+        color: #aaa;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .employee-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+        .employee-form .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .employee-form button[type="submit"] {
+            justify-self: center;
+            align-self: center;
+            padding: 10px 20px;
+        }
+</style>
+
+@section Scripts {
+<script>
+    var modal = document.getElementById("addEmployeeModal");
+    var btn = document.getElementById("addEmployeeBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>
+
+<!-- JavaScript for modals -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Add Employee Modal
+        var addEmployeeModal = $("#addEmployeeModal");
+        var addEmployeeBtn = $("#addEmployeeBtn");
+        var addEmployeeSpan = $("#addEmployeeModal .close");
+
+        addEmployeeBtn.click(function () {
+            addEmployeeModal.css("display", "block");
+        });
+
+        addEmployeeSpan.click(function () {
+            addEmployeeModal.css("display", "none");
+        });
+
+        // Employee Details Modal
+        var detailsModal = $("#employeeDetailsModal");
+        var detailsSpan = $("#employeeDetailsModal .close");
+
+        $(".view-details").click(function () {
+            var employeeId = $(this).data("employee-id");
+            $.ajax({
+                url: '@Url.Action("Details", "Employee")/' + employeeId,
+                type: 'GET',
+                success: function (result) {
+                    $("#employeeDetailsContent").html(result);
+                    detailsModal.css("display", "block");
+                },
+                error: function (error) {
+                    console.log("Error fetching employee details:", error);
+                }
+            });
+        });
+
+        detailsSpan.click(function () {
+            detailsModal.css("display", "none");
+            location.reload(); 
+        });
+
+        // Close modal when clicking outside
+        $(window).click(function (event) {
+            if (event.target == addEmployeeModal[0]) {
+                addEmployeeModal.css("display", "none");
+            }
+            if (event.target == detailsModal[0]) {
+                detailsModal.css("display", "none");
+            }
+        });
+
+
+            $(".employee-form").submit(function (e) {
+                e.preventDefault();
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: '@Url.Action("AddEmployee", "Employee")',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (result) {
+                        if (result.success) {
+                            alert(result.message);
+                            $("#addEmployeeModal").css("display", "none");
+                            location.reload(); // Reload the page to show the new employee
+                        } else {
+                            alert("Error: " + result.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error submitting form:", error);
+                        alert("An error occurred while submitting the form. Please try again.");
+                    }
+                });
+            });
+
+
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        function filterEmployees() {
+            var searchTerm = $('#searchInput').val().toLowerCase();
+            var position = $('#positionFilter').val();
+            var department = $('#departmentFilter').val();
+
+            $('.view-details').each(function () {
+                var $this = $(this);
+                var name = $this.data('name').toLowerCase();
+                var dept = $this.data('department').toLowerCase();
+                var pos = $this.data('position').toLowerCase();
+
+                var matchSearch = name.includes(searchTerm) || dept.includes(searchTerm) || pos.includes(searchTerm);
+                var matchPosition = position === '' || pos === position.toLowerCase();
+                var matchDepartment = department === '' || dept === department.toLowerCase();
+
+                $this.toggle(matchSearch && matchPosition && matchDepartment);
+            });
+        }
+
+        $('#searchInput, #positionFilter, #departmentFilter').on('input change', filterEmployees);
+
+        $('#clearFilters').click(function () {
+            $('#searchInput').val('');
+            $('#positionFilter, #departmentFilter').val('');
+            filterEmployees();
+        });
+
+        filterEmployees();
+    });
+</script>
+
+<script>
+    // Handle sorting based on the dropdown selection
+    document.getElementById('sortField').addEventListener('change', function () {
+        var selectedValue = this.value;
+        var sortOrder = '';
+
+        switch (selectedValue) {
+            case 'name':
+                sortOrder = '@ViewData["NameSortParm"]';
+                break;
+            case 'department':
+                sortOrder = '@ViewData["DepartmentSortParm"]';
+                break;
+            case 'position':
+                sortOrder = '@ViewData["PositionSortParm"]';
+                break;
+            default:
+                sortOrder = '';
+        }
+
+        var url = '@Url.Action("Index", new { sortOrder = "__sortOrder__" })'.replace('__sortOrder__', sortOrder);
+        window.location.href = url;
+    });
+</script>
+
+}

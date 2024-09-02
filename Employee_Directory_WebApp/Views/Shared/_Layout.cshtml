@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Employee_Directory_WebApp.styles.css" asp-append-version="true" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Optional: Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 @*     <header>
@@ -31,56 +40,17 @@
         </nav>
     </header> *@
 
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                @* <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Employee_Directory_WebApp</a> *@
-
-                <div class="d-flex align-items-center flex-grow-1">
-                    <!-- Search Field -->
-                    <div class="input-group me-3">
-                        <input type="text" class="form-control" placeholder="Search..." aria-label="Search">
-                        <span class="input-group-text">
-                            <i class="bi bi-search"></i>
-                        </span>
-                    </div>
-
-                    <!-- Filter Fields -->
-                    <select class="form-select me-2" aria-label="Location">
-                        <option selected>Location</option>
-                        <option value="1">Location 1</option>
-                        <option value="2">Location 2</option>
-                        <!-- Add more options as needed -->
-                    </select>
-
-                    <select class="form-select me-2" aria-label="Department">
-                        <option selected>Department</option>
-                        <option value="1">Department 1</option>
-                        <option value="2">Department 2</option>
-                        <!-- Add more options as needed -->
-                    </select>
-
-                    <!-- Clear Button -->
-                    <button class="btn btn-secondary me-2" type="button">Clear</button>
-
-                    <!-- Add Employee Button -->
-                    <a class="btn btn-primary" asp-area="" asp-controller="Employee" asp-action="Create">Add Employee</a>
-                </div>
-            </div>
-        </nav>
-    </header>
-
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - Employee_Directory_WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+@*      <footer class="border-top footer text-muted">
+         <div class="container">
+             &copy; 2024 - Employee_Directory_WebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+         </div>
+     </footer> *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

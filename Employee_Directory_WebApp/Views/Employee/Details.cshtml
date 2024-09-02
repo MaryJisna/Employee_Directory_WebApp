@@ -1,88 +1,447 @@
-﻿@model Employee_Directory_WebApp.Models.Employee
+﻿
+@model Employee_Directory_WebApp.Models.Employee
 
+@{
+    var notes = new List<(string Heading, string Content)>
+    {
+        ("Meeting Notes", "Discussed the upcoming project deadlines and resource allocation."),
+        ("Client Feedback", "The client appreciated the recent updates and suggested some improvements."),
+        ("Team Update", "Team members are making good progress on their respective tasks.")
+    };
 
-<h1>Employee Details</h1>
+    var random = new Random();
+    var colors = new List<string> { "#FFEBEE", "#FFFDE7", "#F3E5F5", "#E3F2FD", };
+}
 
-<dl class="row">
-    <dt class="col-sm-3">Name</dt>
-    <dd class="col-sm-9">@Model.Name</dd>
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        /* height: 100%; */
+        background-color: #F8F8F8;
+        padding: 10px;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+        border-radius: 4px;
+    }
 
-    <dt class="col-sm-3">Department</dt>
-    <dd class="col-sm-9">@Model.Department</dd>
+    .chart-container {
+        display: flex;
+        flex-direction: column;
+         /* height: 100px; */
+        justify-content: space-between;
+        margin: 5px 0;
+    }
 
-    <dt class="col-sm-3">Position</dt>
-    <dd class="col-sm-9">@Model.Position</dd>
+    .bar {
+        height: 20px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding-left: 5px;
+        color: white;
+        font-size: 12px;
+        box-sizing: border-box;
+        position: relative;
+        margin: 5px 0;
+    }
 
-    <dt class="col-sm-3">Address</dt>
-    <dd class="col-sm-9">@Model.Address</dd>
+    .bar-label {
+/*         position: absolute;
+        left: 5px;
+        color: #000; */
+        display:"flex";
+        font-size: 12px;
+        align-items:center;
+        justify-content:center;
+        margin-top:5px;
 
-    <dt class="col-sm-3">Date of Joining</dt>
-    <dd class="col-sm-9">@Model.DateOfJoining.ToShortDateString()</dd>
+    }
 
-    <dt class="col-sm-3">CTC</dt>
-    <dd class="col-sm-9">@Model.CTC.ToString("C")</dd>
+    .bar-label1 {
+        /*         position: absolute;
+            left: 5px;
+            color: #000; */
+        display: "flex";
+        font-size: 7px;
+        align-items: center;
+        justify-content: center;
+     
+    }
 
-    <dt class="col-sm-3">Salary</dt>
-    <dd class="col-sm-9">@Model.Salary.ToString("C")</dd>
+    .leave-sub-card{
+        flex: 1;
+        margin: 0 2px;
+        box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset;
+        border-radius: 4px;
+        height: 130px;
+        background-color: #F8F8F8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    <dt class="col-sm-3">Team Name</dt>
-    <dd class="col-sm-9">@Model.TeamName</dd>
+    }
 
-    <dt class="col-sm-3">Manager Name</dt>
-    <dd class="col-sm-9">@Model.ManagerName</dd>
+    .salary-innercard {
+        flex: 1;
+        width: 100%;
+        overflow-y: auto;
+        border: 1px solid #000;
+        border-radius: 4px;
+        background-color: white;
+        height: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Horizontally center the items */
+        justify-content: center; /* Vertically center the items */
+        padding: 0;
+        margin: 0;
+    }
 
-    <dt class="col-sm-3">Total Experience</dt>
-    <dd class="col-sm-9">@Model.TotalExperience</dd>
-@*         .Days / 365 + " Years, " + (Model.TotalExperience.Days % 365) / 30 + " Months"</dd>
- *@
-    <dt class="col-sm-3">In-House Experience</dt>
-    <dd class="col-sm-9">@Model.InHouseExperience</dd>
-@*         .Days / 365 + " Years, " + (Model.InHouseExperience.Days % 365) / 30 + " Months"</dd>
- *@
-</dl>
-
-<h2>Leave Details</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Leave Date</th>
-            <th>Leave Type</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var leave in Model.Leaves)
-        {
-            <tr>
-                <td>@leave.LeaveDate.ToShortDateString()</td>
-                <td>@leave.LeaveType</td>
-                <td>@leave.Status</td>
-            </tr>
+        .salary-innercard p {
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+            text-align: center;
         }
-    </tbody>
-</table>
 
-<h2>Attendance Details</h2>
+    .profile-head p {
+        margin: 0;
+        padding: 0;
+        font-size: 10px;
+        text-align: center;
+    }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Present</th>
-            <th>Remark</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var attendance in Model.Attendances)
-        {
-            <tr>
-                <td>@attendance.Date.ToShortDateString()</td>
-                <td>@(attendance.IsPresent ? "Yes" : "No")</td>
-                <td>@attendance.Remark</td>
-            </tr>
-        }
-    </tbody>
-</table>
+    .employee-details h2,
+    .employee-details p,
+    .employee-details span {
+        margin: 0;
+        padding: 0px;
+        margin-left:150px;
+    }
 
-<a href="@Url.Action("Index", "Employee")" class="btn btn-primary">Back to List</a>
+    .employee-details span {
+        color: gold;
+        margin: 0;
+    }
+
+    .profile-address p,
+    .profile-address span {
+        margin: 0;
+        padding: 5px;
+      
+    }
+
+    .profile-address span {
+        margin: 0;
+    }
+
+    .team-name {
+        background-color: #d4edda; 
+        color: #155724;
+        padding: 2px 5px;
+        border-radius: 4px; 
+    }
+
+    .manager-name {
+        background-color: #f8d7da; 
+        color: #721c24; 
+        padding: 2px 5px; 
+        border-radius: 4px; 
+    }
+ 
+</style>
+
+@* <div id="parent_div" style="border: 1px solid #ccc; padding: 20px; border-radius: 10px; width: 100%; margin:0; background-color:aqua"> *@
+<div id="parent_div" style=" padding: 20px; border-radius: 10px; width: 100%; margin:0;  ">
+    <!-- Close Button -->
+    <div style="display: flex; justify-content: flex-end; width: 100%;">
+        <span class="close" style="font-size: 24px; cursor: pointer;" onclick="window.location.href='@Url.Action("Index", "Employee")'">&times;</span>
+    </div>
+    @* <a href="@Url.Action("Index", "Employee")>Back to List</a> *@
+    <!-- First Section: Employee Details with Light Blue Background -->
+    <div class=profile-head; style="background-color: lightblue; padding: 20px; display: flex; position: relative;">
+        <!-- Profile Image -->
+        <div style="position: absolute; top: 60px; left: 10px;">
+            @* <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s" alt="Avatar" style="border-radius: 50%; width: 130px; height: 130px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);"> *@
+
+            <img src="@(string.IsNullOrEmpty(@Model.ProfileImagePath)
+                                   ? "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTw4xIzlTTRJKIQB1tq1Jbs5Rfj7hU6h1UtPg&s"
+                                   : @Model.ProfileImagePath)"
+                 alt="@@Model.Name's Avatar"
+                 style="border-radius: 50%; width: 130px; height: 130px; border: 5px solid white; box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                 class="avatar" />
+        </div>
+
+        <!-- Employee Details -->
+        <div class="employee-details">
+            <h2>@Model.Name</h2>
+            <p><strong>Position:</strong> @Model.Position</p>
+            <p>
+                <strong>Rating:</strong>
+                <span>★★★★☆</span> 
+            </p>
+        </div>
+    </div>
+
+    <!-- Second Section: Address and Experience -->
+    <div class="profile-address" style="margin-left:160px">
+        <div>
+            <p><strong>Address:</strong> @Model.Address</p>
+        </div>
+        <div style="width:100%;  display:flex ">
+            <p><strong>Total Experience:</strong> @Model.TotalExperience months</p>
+            <p style="margin-left:20px"><strong>In-House Experience:</strong> @Model.InHouseExperience months</p>
+        </div>
+    </div>
+
+    <div style="margin-left:20px; display:flex; gap:30px;">
+        <p><strong>Team:</strong> <span class="team-name">@Model.TeamName</span></p>
+        <p><strong>Reporting Manager:</strong> <span class="manager-name">@Model.ManagerName</span></p>
+
+    </div>
+
+    <div style="display: flex; gap:5px">
+        <div id="card-1" style="flex: 1; border: 1px solid #000; display: flex; height:180px; padding:10px;
+                        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+            <div style="flex: 1;">
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Days Present</p>
+                <div class="leave-sub-card">
+                    <p style="margin: 0; padding: 0; font-size:35px; color:dodgerblue">29</p>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Casual Leaves </p>
+                <div class="container" style="height:130px">
+                    <div class="chart-container">
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (4 - 1) / (10 - 1)); background-color: #4CAF50;">
+                            </div>
+                            <span class="bar-label">4</span>
+                        </div>
+
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (8 - 1) / (10 - 1)); background-color: darkslateblue;">
+                            </div>
+                            <span class="bar-label">8</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:#4CAF50"></div>
+                            <span class="bar-label1">Available</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:darkslateblue"></div>
+                            <span class="bar-label1">Taken</span>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <div style="flex: 1;">
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Sick Leaves </p>
+                <div class="container" style="height:130px">
+                    <div class="chart-container">
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (4 - 1) / (10 - 1)); background-color: #4CAF50;">
+                            </div>
+                            <span class="bar-label">4</span>
+                        </div>
+
+                        <div style="display :flex">
+                            <div class="bar" style="width: calc(100% * (8 - 1) / (10 - 1)); background-color: darkslateblue;">
+                            </div>
+                            <span class="bar-label">8</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:#4CAF50"></div>
+                            <span class="bar-label1">Available</span>
+                        </div>
+                        <div style="display :flex">
+                            <div style="height:10px; width:20px; background-color:darkslateblue"></div>
+                            <span class="bar-label1">Taken</span>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="leave-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 180px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+            <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Leave Applications</p>
+            </div>
+            <div style="flex: 1; overflow-y: hidden; border:1px solid #000; border-radius:4px; background-color:white">
+                <table class="table" style="width: 100%; border-collapse: collapse;">
+                    <thead style="position: sticky; top: 0; background-color: #EEEEED;">
+                        <tr>
+                            <th style="width: 33%;">Leave Date</th>
+                            <th style="width: 33%;">Leave Type</th>
+                            <th style="width: 34%;">Status</th>
+                        </tr>
+                    </thead>
+                </table>
+                <div style="overflow-y: auto; height: 60px;">
+                    <table class="table" style="width: 100%; border-collapse: collapse;">
+@*                         <tbody>
+                            @foreach (var leave in Model.Leaves)
+                            {
+                                <tr>
+                                    <td style="width: 33%;">@leave.LeaveDate.ToShortDateString()</td>
+                                    <td style="width: 33%;">@leave.LeaveType</td>
+                                    <td style="width: 34%;">@leave.Status</td>
+                                </tr>
+                            }
+                        </tbody> *@
+                        <tbody>
+                            @if (Model.Leaves != null && Model.Leaves.Any())
+                            {
+                                foreach (var leave in Model.Leaves)
+                                {
+                                    <tr>
+                                        <td style="width: 33%;">@leave.LeaveDate.ToShortDateString()</td>
+                                        <td style="width: 33%;">@leave.LeaveType</td>
+                                        <td style="width: 34%;">@leave.Status</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                // Sample data to display when Leaves is empty
+                                var sampleLeaves = new List<(string LeaveDate, string LeaveType, string Status)>
+                            {
+                            ("01/09/2023", "Casual Leave", "Approved"),
+                            ("05/09/2023", "Sick Leave", "Pending"),
+                            ("12/09/2023", "Casual Leave", "Rejected")
+                            };
+
+                                foreach (var leave in sampleLeaves)
+                                {
+                                    <tr>
+                                        <td style="width: 33%;">@leave.LeaveDate</td>
+                                        <td style="width: 33%;">@leave.LeaveType</td>
+                                        <td style="width: 34%;">@leave.Status</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div style="flex: 1; display: flex; gap:5px; margin-top:10px;">
+
+
+        <div id="leave-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 220px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+            <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Notes</p>
+            </div>
+            <div style="flex: 1; overflow-y: auto; border:1px solid #000; border-radius:4px; background-color:white; padding: 10px;">
+                @foreach (var note in notes)
+                {
+                    var bgColor = colors[random.Next(colors.Count)];
+                    <div style="background-color:@bgColor; padding: 10px; margin-bottom: 10px; border-radius: 4px;">
+                        <p style="margin: 0;">@note.Heading</p>
+                        <p style="margin: 5px 0 0; font-size:10px;">@note.Content</p>
+                    </div>
+                }
+            </div>
+        </div>
+        <div style="flex: 1; padding:0px 10px 0px 10px; ">
+
+            <div id="probation-card" style="flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 90px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); border-radius: 8px; background-color: #f9f9f9;">
+                <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                    <p style="margin: 0; padding: 0; font-weight: bold; color: #333;">Probation</p>
+                </div>
+                <div id="probation-progress" style="flex: 1; overflow-y: auto; border:1px solid #ddd; border-radius:4px; background-color:#fff; padding: 10px; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 100%; background-color: #e0e0e0; border-radius: 8px; position: relative; height: 20px;">
+                        <div style="width: 70%; background-color: #4CAF50; height: 100%; border-radius: 8px;">
+                            <span style="position: absolute; width: 100%; text-align: center; color: #fff; top: 0; left: 0; font-weight: bold;">70%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div id="probation-card" style=" margin-top:10px; flex: 1; border: 1px solid #000; display: flex; flex-direction: column; height: 120px; padding: 10px; box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2); border-radius: 8px; background-color: #EEEEED;">
+                <div style="display:flex; width:100%; align-items:center; justify-content:center;">
+                    <p style="margin: 0; padding: 0;">Salary</p>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <div class="salary-innercard">
+                        <p style="font-size:13px">Accounting accessible</p>
+                        <p style="font-size:16px; color:cornflowerblue"> 50000</p>
+                    </div>
+                    <div class="salary-innercard">
+                        <p style="font-size:13px">Accounting payable</p>
+                        <p style="font-size:16px; color:cornflowerblue"> 55000</p>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+        </div>
+    </div>
+
+
+    <!-- Back to List Button -->
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="@Url.Action("Index", "Employee")" class="btn btn-primary">Back to List</a>
+    </div>
+
+</div>
+
+
+
+   <!-- Third Section: All Other Details -->
+@*     <div style="padding: 20px;">
+        <dl class="row">
+            <dt class="col-sm-3">Department</dt>
+            <dd class="col-sm-9">@Model.Department</dd>
+
+            <dt class="col-sm-3">Date of Joining</dt>
+            <dd class="col-sm-9">@Model.DateOfJoining.ToShortDateString()</dd>
+
+            <dt class="col-sm-3">CTC</dt>
+            <dd class="col-sm-9">@Model.CTC.ToString("C")</dd>
+
+            <dt class="col-sm-3">Salary</dt>
+            <dd class="col-sm-9">@Model.Salary.ToString("C")</dd>
+
+            <dt class="col-sm-3">Team Name</dt>
+            <dd class="col-sm-9">@Model.TeamName</dd>
+
+            <dt class="col-sm-3">Manager Name</dt>
+            <dd class="col-sm-9">@Model.ManagerName</dd>
+        </dl>
+
+
+        <h2>Attendance Details</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Present</th>
+                    <th>Remark</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var attendance in Model.Attendances)
+                {
+                    <tr>
+                        <td>@attendance.Date.ToShortDateString()</td>
+                        <td>@(attendance.IsPresent ? "Yes" : "No")</td>
+                        <td>@attendance.Remark</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div> *@
